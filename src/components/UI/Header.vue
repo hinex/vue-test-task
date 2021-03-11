@@ -26,10 +26,10 @@ export default {
   computed: {
     search: {
       get() {
-        return this.$store.state.search;
+        return this.$store.state.npm.search;
       },
       set(val) {
-        this.$store.dispatch('preloadSearch', {
+        this.$store.dispatch('preloadNpmSearch', {
           search: val,
         });
       },

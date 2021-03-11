@@ -13,28 +13,24 @@
       small
       striped
     >
+      <template #cell(name)="row">
+        <div class="mb-2">
+          {{row.item.name}}
+        </div>
+
+        <b-btn
+          variant="info"
+          size="sm"
+          :disabled="loading"
+          @click="$emit('open-item', row.item.name)">
+          Show Details
+        </b-btn>
+      </template>
       <template #cell(author)="row">
-        <div v-if="row.item.author && row.item.author.name" class="small mb-2">
-          <a v-if="row.item.author.url" :href="row.item.author.url" target="_blank">
-            {{row.item.author.name}}
-          </a>
-          <span v-else>{{row.item.author.name}}</span>
-        </div>
-        <div v-if="row.item.author && row.item.author.email" class="small">
-          Email:<br>
-          <a :href="`mailto:${row.item.author.email}`">{{row.item.author.email}}</a>
-        </div>
+        <User v-if="row.item.author" :user="row.item.author" />
       </template>
       <template #cell(publisher)="row">
-        <div v-if="row.item.publisher && row.item.publisher.username" class="small mb-2">
-          <a :href="`https://www.npmjs.com/~${row.item.publisher.username}`" target="_blank">
-            {{row.item.publisher.username}}
-          </a>
-        </div>
-        <div v-if="row.item.publisher && row.item.publisher.email" class="small">
-          Email:<br>
-          <a :href="`mailto:${row.item.publisher.email}`">{{row.item.publisher.email}}</a>
-        </div>
+        <User v-if="row.item.publisher" :user="row.item.publisher" />
       </template>
     </b-table>
 
@@ -75,9 +71,13 @@
 
 <script>
 import { mapState } from 'vuex';
+import User from '../UI/User.vue';
 
 export default {
   name: 'List',
+  components: {
+    User,
+  },
   data() {
     return {
       fields: [
@@ -85,10 +85,10 @@ export default {
           key: 'name', label: 'Package Name',
         },
         {
-          key: 'description', label: 'Description',
+          key: 'version', label: 'Version',
         },
         {
-          key: 'version', label: 'Version',
+          key: 'description', label: 'Description',
         },
         {
           key: 'author', label: 'Author',
@@ -104,13 +104,19 @@ export default {
     };
   },
   computed: {
-    ...mapState(['search', 'searchResult', 'total', 'loading', 'limit']),
+    ...mapState({
+      search: (state) => state.npm.search,
+      searchResult: (state) => state.npm.searchResult,
+      total: (state) => state.npm.total,
+      loading: (state) => state.npm.loading,
+      limit: (state) => state.npm.limit,
+    }),
     page: {
       get() {
-        return this.$store.state.page;
+        return this.$store.state.npm.page;
       },
       set(val) {
-        this.$store.dispatch('preloadSearch', {
+        this.$store.dispatch('preloadNpmSearch', {
           page: val,
           search: this.search,
         });
