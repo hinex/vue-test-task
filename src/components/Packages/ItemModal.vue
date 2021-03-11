@@ -12,13 +12,20 @@
             <ItemModalDetails v-if="item" :item="item" />
           </b-card-text>
         </b-tab>
-        <b-tab title="JSDelivr">
-          <b-card-text>Tab contents 2</b-card-text>
+        <b-tab title="Versions">
+          <b-card-text>
+            <ItemModalVersions :tags="tags" :versions="versions" />
+          </b-card-text>
+        </b-tab>
+        <b-tab title="Stats">
+          <b-card-text>
+            <ItemModalStats :stats="stats" />
+          </b-card-text>
         </b-tab>
       </b-tabs>
     </b-card>
     <template #modal-footer>
-      <div class="d-flex flex-grow-1 align-items-center justify-content-between">
+      <div class="d-flex flex-grow-1 align-items-center justify-content-between flex-wrap">
         <span>Published: {{date}}</span>
         <b-button
           variant="danger"
@@ -33,11 +40,15 @@
 <script>
 import Dateformat from 'dateformat';
 import ItemModalDetails from './ItemModalDetails.vue';
+import ItemModalVersions from './ItemModalVersions.vue';
+import ItemModalStats from './ItemModalStats.vue';
 
 export default {
   name: 'ItemModal',
   components: {
     ItemModalDetails,
+    ItemModalVersions,
+    ItemModalStats,
   },
   data() {
     return {
@@ -66,11 +77,32 @@ export default {
 
       return this.$store.getters.getNpmPackage(this.npmPackage);
     },
+    stats() {
+      if (!this.npmPackage) {
+        return {};
+      }
+
+      return this.$store.state.jsdelivr.stats;
+    },
+    tags() {
+      if (!this.npmPackage) {
+        return {};
+      }
+
+      return this.$store.state.jsdelivr.tags;
+    },
+    versions() {
+      if (!this.npmPackage) {
+        return {};
+      }
+
+      return this.$store.state.jsdelivr.versions;
+    },
   },
   methods: {
     openModal(npmPackage) {
       this.npmPackage = npmPackage;
-      this.$store.dispatch('preloadDelivrData');
+      this.$store.dispatch('preloadDelivrData', npmPackage);
       this.$refs.item.show();
     },
     closeModal() {

@@ -8,7 +8,7 @@ export default {
   },
   mutations: {
     setTags(state, tags) { state.tags = tags; },
-    setVersions(state, versions) { state.varsions = versions; },
+    setVersions(state, versions) { state.versions = versions; },
     setStats(state, stats) { state.stats = stats; },
   },
   actions: {

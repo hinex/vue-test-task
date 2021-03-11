@@ -4,9 +4,6 @@
       :items="searchResult"
       :fields="fields"
       :busy="loading"
-      :sort-by.sync="sortBy"
-      :sort-desc.sync="sortDesc"
-      :sort-direction="sortDirection"
       :no-provider-paging="true"
       stacked="md"
       show-empty
@@ -35,27 +32,7 @@
     </b-table>
 
     <b-row>
-      <b-col sm="5" md="6" class="my-1">
-        <b-form-group
-          label="Per page"
-          label-for="per-page-select"
-          label-cols-sm="6"
-          label-cols-md="4"
-          label-cols-lg="3"
-          label-align-sm="right"
-          label-size="sm"
-          class="mb-0"
-        >
-          <b-form-select
-            id="per-page-select"
-            v-model="limit"
-            :options="pageOptions"
-            size="sm"
-          ></b-form-select>
-        </b-form-group>
-      </b-col>
-
-      <b-col sm="7" md="6" class="my-1">
+      <b-col offset-md="3" cols="12" md="6" class="my-1">
         <b-pagination
           v-model="page"
           :total-rows="total"
@@ -97,10 +74,6 @@ export default {
           key: 'publisher', label: 'Publisher',
         },
       ],
-      pageOptions: [10, 15, { value: 100, text: 'Show a lot' }],
-      sortBy: '',
-      sortDesc: false,
-      sortDirection: 'asc',
     };
   },
   computed: {
